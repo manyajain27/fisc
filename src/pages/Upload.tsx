@@ -3,15 +3,26 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Navigation from "@/components/Navigation";
 import { useNavigate } from "react-router-dom";
+import { useRef } from "react";
 
 const Upload = () => {
   const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileUpload = () => {
-    // Simulate file upload process
-    setTimeout(() => {
-      navigate("/analysis");
-    }, 1000);
+  const handleFileSelect = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Process the selected file here
+      console.log("Selected file:", file.name);
+      // Simulate file processing and navigate to analysis
+      setTimeout(() => {
+        navigate("/analysis");
+      }, 1000);
+    }
   };
 
   return (
@@ -29,7 +40,7 @@ const Upload = () => {
           </p>
 
           <Card className="p-12 border-2 border-dashed border-border bg-card hover:border-primary/50 transition-colors cursor-pointer">
-            <CardContent className="p-0" onClick={handleFileUpload}>
+            <CardContent className="p-0" onClick={handleFileSelect}>
               <div className="mb-8 flex justify-center">
                 <div className="p-6 bg-muted rounded-2xl">
                   <UploadIcon className="w-12 h-12 text-muted-foreground" />
@@ -46,10 +57,18 @@ const Upload = () => {
 
               <Button 
                 className="bg-primary text-primary-foreground hover:bg-primary/90"
-                onClick={handleFileUpload}
+                onClick={handleFileSelect}
               >
                 Choose File
               </Button>
+              
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".csv,.json"
+                onChange={handleFileChange}
+                className="hidden"
+              />
             </CardContent>
           </Card>
         </div>
