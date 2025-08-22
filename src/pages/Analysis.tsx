@@ -1,11 +1,15 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { Wallet, TrendingUp, DollarSign, PieChart as PieChartIcon, Clock, ArrowRight } from "lucide-react";
+import { Wallet, TrendingUp, DollarSign, PieChart as PieChartIcon, Clock, ArrowRight, X } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import { useState } from "react";
 
 const Analysis = () => {
+  const [selectedStrategy, setSelectedStrategy] = useState<string | null>(null);
+
   const portfolioData = [
     { name: "Total Portfolio Value", value: "₹25,00,000", icon: Wallet },
     { name: "Total Gains", value: "₹4,50,000", icon: TrendingUp },
@@ -31,25 +35,82 @@ const Analysis = () => {
 
   const reinvestmentStrategies = [
     {
+      id: "municipal-bonds",
       name: "Tax-Free Municipal Bonds",
       efficiency: "95% Tax Efficient",
       description: "Municipal bonds offer tax-free income at the federal level and potentially state level.",
       allocation: "30%",
-      color: "success"
+      color: "success",
+      detailedInfo: {
+        overview: "Municipal bonds are debt securities issued by local governments to fund public projects. The interest earned is typically exempt from federal taxes and sometimes state taxes.",
+        benefits: [
+          "Tax-free interest income at federal level",
+          "Potential state tax exemption for in-state bonds",
+          "Predictable income stream",
+          "Lower default risk compared to corporate bonds"
+        ],
+        risks: [
+          "Interest rate sensitivity",
+          "Credit risk of the issuing municipality",
+          "Lower yields compared to taxable bonds",
+          "Limited liquidity in some cases"
+        ],
+        suitability: "Best for investors in higher tax brackets seeking steady, tax-free income",
+        minimumInvestment: "₹10,000 - ₹50,000 depending on the bond",
+        lockInPeriod: "Varies from 1 year to 30 years"
+      }
     },
     {
+      id: "elss-mutual-funds",
       name: "ELSS Mutual Funds",
       efficiency: "85% Tax Efficient", 
       description: "Equity-linked savings schemes provide tax deductions under Section 80C with a 3-year lock-in.",
       allocation: "40%",
-      color: "info"
+      color: "info",
+      detailedInfo: {
+        overview: "ELSS are tax-saving mutual funds that invest primarily in equity markets. They offer tax deductions under Section 80C of the Income Tax Act.",
+        benefits: [
+          "Tax deduction up to ₹1.5 lakh under Section 80C",
+          "Potential for higher returns through equity exposure",
+          "Shortest lock-in period among tax-saving investments",
+          "Professional fund management"
+        ],
+        risks: [
+          "Market volatility affects returns",
+          "No guaranteed returns",
+          "3-year mandatory lock-in period",
+          "Fund manager risk"
+        ],
+        suitability: "Ideal for long-term wealth creation with tax benefits",
+        minimumInvestment: "₹500 - ₹1,000 (SIP) or ₹5,000 (lump sum)",
+        lockInPeriod: "3 years from date of investment"
+      }
     },
     {
+      id: "reits",
       name: "REITs",
       efficiency: "75% Tax Efficient",
       description: "Real Estate Investment Trusts offer potential tax advantages through depreciation and lower dividend taxes.",
       allocation: "30%",
-      color: "warning"
+      color: "warning",
+      detailedInfo: {
+        overview: "REITs are investment vehicles that own, operate, or finance income-generating real estate. They provide exposure to real estate markets with better liquidity than direct property investment.",
+        benefits: [
+          "Regular dividend income (typically 90% of taxable income)",
+          "Diversification into real estate sector",
+          "Professional property management",
+          "Better liquidity than direct real estate"
+        ],
+        risks: [
+          "Interest rate sensitivity",
+          "Real estate market volatility",
+          "Dividend taxation as per income tax slab",
+          "Management and operational risks"
+        ],
+        suitability: "Suitable for investors seeking real estate exposure without direct ownership",
+        minimumInvestment: "₹10,000 - ₹15,000 per unit",
+        lockInPeriod: "No mandatory lock-in, but recommended 3-5 years"
+      }
     }
   ];
 
@@ -232,9 +293,80 @@ const Analysis = () => {
                   <p className="text-sm text-muted-foreground mb-3">{strategy.description}</p>
                   <p className="text-sm font-medium text-primary">Recommended Allocation: {strategy.allocation}</p>
                 </div>
-                <Button variant="ghost" size="sm" className="text-primary hover:text-primary/80">
-                  Learn More <ArrowRight className="w-4 h-4 ml-1" />
-                </Button>
+                
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="ghost" size="sm" className="text-primary hover:text-primary/80 hover:bg-primary/5">
+                      Learn More <ArrowRight className="w-4 h-4 ml-1" />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                    <DialogHeader className="space-y-3">
+                      <DialogTitle className="text-2xl font-semibold flex items-center gap-3">
+                        {strategy.name}
+                        <Badge variant="secondary" className={`bg-${strategy.color}/10 text-${strategy.color}`}>
+                          {strategy.efficiency}
+                        </Badge>
+                      </DialogTitle>
+                    </DialogHeader>
+                    
+                    <div className="space-y-6 mt-6">
+                      <div>
+                        <h4 className="font-semibold text-foreground mb-2">Overview</h4>
+                        <p className="text-muted-foreground leading-relaxed">{strategy.detailedInfo.overview}</p>
+                      </div>
+                      
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <div>
+                          <h4 className="font-semibold text-success mb-3">Key Benefits</h4>
+                          <ul className="space-y-2">
+                            {strategy.detailedInfo.benefits.map((benefit, idx) => (
+                              <li key={idx} className="flex items-start gap-2 text-sm">
+                                <div className="w-1.5 h-1.5 bg-success rounded-full mt-2 flex-shrink-0" />
+                                <span className="text-muted-foreground">{benefit}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        
+                        <div>
+                          <h4 className="font-semibold text-destructive mb-3">Potential Risks</h4>
+                          <ul className="space-y-2">
+                            {strategy.detailedInfo.risks.map((risk, idx) => (
+                              <li key={idx} className="flex items-start gap-2 text-sm">
+                                <div className="w-1.5 h-1.5 bg-destructive rounded-full mt-2 flex-shrink-0" />
+                                <span className="text-muted-foreground">{risk}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                      
+                      <div className="grid md:grid-cols-3 gap-4 p-4 bg-muted/30 rounded-lg">
+                        <div>
+                          <h5 className="font-medium text-foreground mb-1">Suitability</h5>
+                          <p className="text-sm text-muted-foreground">{strategy.detailedInfo.suitability}</p>
+                        </div>
+                        <div>
+                          <h5 className="font-medium text-foreground mb-1">Minimum Investment</h5>
+                          <p className="text-sm text-muted-foreground">{strategy.detailedInfo.minimumInvestment}</p>
+                        </div>
+                        <div>
+                          <h5 className="font-medium text-foreground mb-1">Lock-in Period</h5>
+                          <p className="text-sm text-muted-foreground">{strategy.detailedInfo.lockInPeriod}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center justify-between p-4 bg-primary/5 rounded-lg border border-primary/10">
+                        <div>
+                          <p className="font-medium text-primary">Recommended Allocation</p>
+                          <p className="text-sm text-muted-foreground">Based on your portfolio analysis</p>
+                        </div>
+                        <div className="text-2xl font-bold text-primary">{strategy.allocation}</div>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
             ))}
           </CardContent>
