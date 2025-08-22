@@ -7,6 +7,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { useChat } from '@/hooks/useChat';
+import fiscSmallLogo from "@/assets/fisc_small_logo.png";
 
 const FiscAIChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -78,7 +79,8 @@ const FiscAIChatbot = () => {
     return (
       <Button
         onClick={toggleChat}
-        className="fixed bottom-4 right-4 h-14 w-14 rounded-full shadow-lg bg-primary hover:bg-primary/90 z-50"
+        className="fixed bottom-4 right-4 h-14 w-14 rounded-full shadow-lg text-white hover:opacity-90 z-50"
+        style={{ backgroundColor: '#154a36' }}
         size="icon"
       >
         <MessageCircle className="h-6 w-6" />

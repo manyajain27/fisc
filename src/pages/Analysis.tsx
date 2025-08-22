@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Wallet, TrendingUp, DollarSign, PieChart as PieChartIcon, Clock, ArrowRight, X } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
 import { useState } from "react";
 
 const Analysis = () => {
@@ -129,7 +130,7 @@ const Analysis = () => {
             <CardTitle className="text-xl font-semibold">Portfolio Overview</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {portfolioData.map((item, index) => {
                 const Icon = item.icon;
                 return (
@@ -148,14 +149,14 @@ const Analysis = () => {
           </CardContent>
         </Card>
 
-        <div className="grid lg:grid-cols-2 gap-8 mb-8">
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 mb-6 lg:mb-8">
           {/* Asset Allocation Circles */}
           <Card>
             <CardHeader>
               <CardTitle className="text-xl font-semibold">Asset Allocation</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-4 lg:mb-6">
                 {assetAllocationData.map((asset, index) => (
                   <div key={index} className="text-center">
                     <div className="relative w-20 h-20 mx-auto mb-3">
@@ -212,7 +213,7 @@ const Analysis = () => {
           </Card>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8 mb-8">
+        <div className="grid lg:grid-cols-3 gap-6 lg:gap-8 mb-6 lg:mb-8">
           {/* Capital Gains */}
           <Card>
             <CardHeader>
@@ -316,7 +317,7 @@ const Analysis = () => {
                         <p className="text-muted-foreground leading-relaxed">{strategy.detailedInfo.overview}</p>
                       </div>
                       
-                      <div className="grid md:grid-cols-2 gap-6">
+                      <div className="grid sm:grid-cols-2 gap-4 lg:gap-6">
                         <div>
                           <h4 className="font-semibold text-success mb-3">Key Benefits</h4>
                           <ul className="space-y-2">
@@ -342,7 +343,7 @@ const Analysis = () => {
                         </div>
                       </div>
                       
-                      <div className="grid md:grid-cols-3 gap-4 p-4 bg-muted/30 rounded-lg">
+                      <div className="grid sm:grid-cols-3 gap-4 p-4 bg-muted/30 rounded-lg">
                         <div>
                           <h5 className="font-medium text-foreground mb-1">Suitability</h5>
                           <p className="text-sm text-muted-foreground">{strategy.detailedInfo.suitability}</p>
@@ -372,6 +373,7 @@ const Analysis = () => {
           </CardContent>
         </Card>
       </main>
+      <Footer />
     </div>
   );
 };
