@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import Upload from "./pages/Upload";
 import Analysis from "./pages/Analysis";
 import NotFound from "./pages/NotFound";
+import FiscAIChatbot from "./components/FiscAIChatbot";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ const App = () => (
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <FiscAIChatbot />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
