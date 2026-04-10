@@ -34,7 +34,7 @@ const RegimeOptimizer: React.FC<RegimeOptimizerProps> = ({ portfolio }) => {
     setLoading(true);
     
     try {
-      // Prepare deductions for old regime
+      
       const oldRegimeDeductions: TaxDeduction[] = [
         {
           section: '80C',
