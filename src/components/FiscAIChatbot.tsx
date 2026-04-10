@@ -23,7 +23,7 @@ const FiscAIChatbot = () => {
   };
 
   const scrollToLatestMessage = () => {
-    // Scroll to the top of the latest assistant message for better readability
+    
     if (messages.length > 0) {
       const latestMessage = messages[messages.length - 1];
       if (latestMessage.role === 'assistant') {
