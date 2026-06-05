@@ -95,8 +95,8 @@ const TaxSavingInsights: React.FC<TaxSavingInsightsProps> = ({ portfolio }) => {
       });
 
       // Regime Optimization Insight
-      const oldRegimeCalculation = taxCalculator.calculatePortfolioTax(portfolio, 1200000, 'old', []);
-      const newRegimeCalculation = taxCalculator.calculatePortfolioTax(portfolio, 1200000, 'new', []);
+      const oldRegimeCalculation = taxCalculator.calculatePortfolioTax(portfolio, 1800000, 'old', []);
+      const newRegimeCalculation = taxCalculator.calculatePortfolioTax(portfolio, 1800000, 'new', []);
       const regimeSavings = Math.abs(oldRegimeCalculation.totalTaxLiability - newRegimeCalculation.totalTaxLiability);
       
       if (regimeSavings > 10000) {

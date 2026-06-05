@@ -104,7 +104,7 @@ const Dashboard = () => {
       .filter(gain => gain.type === 'LTCG')
       .reduce((sum, gain) => sum + Math.max(0, gain.gainAmount), 0);
 
-    const totalTax = capitalGains.reduce((sum, gain) => sum + gain.taxAmount, 0);
+    const totalTax = taxCalculator.aggregateCapitalGains(capitalGains as any).totalCapitalGainsTax;
 
     // Tax efficiency score (0-100)
     const ltcgRatio = (ltcgGains / (stcgGains + ltcgGains)) * 100 || 0;
@@ -160,51 +160,83 @@ const Dashboard = () => {
   };
 
   const generateSamplePortfolio = () => {
+    // Dates are relative to today so the STCG/LTCG mix always stays realistic.
+    const monthsAgo = (n: number) => {
+      const dt = new Date();
+      dt.setMonth(dt.getMonth() - n);
+      return dt;
+    };
+
     const sampleInvestments = [
+      // Recent buys -> Short Term Capital Gains (taxed at 20%)
       {
         id: 'sample_1',
-        name: 'Reliance Industries',
+        name: 'Tata Motors',
         type: 'equity' as const,
         category: 'stcg' as const,
-        quantity: 50,
-        purchasePrice: 2400,
-        currentPrice: 2650,
-        purchaseDate: new Date('2023-01-15'),
-        dividendReceived: 25,
-        brokerageFee: 10
+        quantity: 300,
+        purchasePrice: 700,
+        currentPrice: 1080,
+        purchaseDate: monthsAgo(5),
+        dividendReceived: 30,
+        brokerageFee: 40
       },
       {
         id: 'sample_2',
-        name: 'SBI Bluechip Fund',
-        type: 'mutual_fund' as const,
-        category: 'stcg' as const,
-        quantity: 100,
-        purchasePrice: 145,
-        currentPrice: 165,
-        purchaseDate: new Date('2022-06-10'),
-        dividendReceived: 8
-      },
-      {
-        id: 'sample_3',
-        name: 'HDFC Bank',
+        name: 'Eternal (Zomato)',
         type: 'equity' as const,
         category: 'stcg' as const,
-        quantity: 25,
-        purchasePrice: 1500,
-        currentPrice: 1680,
-        purchaseDate: new Date('2023-03-20'),
-        dividendReceived: 15,
-        brokerageFee: 8
+        quantity: 1500,
+        purchasePrice: 200,
+        currentPrice: 290,
+        purchaseDate: monthsAgo(8),
+        brokerageFee: 50
+      },
+      // Older buys -> Long Term Capital Gains (taxed at 12.5% above ₹1.25L)
+      {
+        id: 'sample_3',
+        name: 'Reliance Industries',
+        type: 'equity' as const,
+        category: 'ltcg' as const,
+        quantity: 100,
+        purchasePrice: 2200,
+        currentPrice: 3100,
+        purchaseDate: monthsAgo(26),
+        dividendReceived: 80,
+        brokerageFee: 20
       },
       {
         id: 'sample_4',
-        name: 'Axis Long Term Equity',
+        name: 'Infosys',
+        type: 'equity' as const,
+        category: 'ltcg' as const,
+        quantity: 150,
+        purchasePrice: 1300,
+        currentPrice: 2000,
+        purchaseDate: monthsAgo(30),
+        dividendReceived: 60,
+        brokerageFee: 25
+      },
+      {
+        id: 'sample_5',
+        name: 'SBI Bluechip Fund',
+        type: 'mutual_fund' as const,
+        category: 'ltcg' as const,
+        quantity: 400,
+        purchasePrice: 145,
+        currentPrice: 210,
+        purchaseDate: monthsAgo(22),
+        dividendReceived: 20
+      },
+      {
+        id: 'sample_6',
+        name: 'Axis Long Term Equity (ELSS)',
         type: 'elss' as const,
         category: 'tax_saving' as const,
-        quantity: 200,
+        quantity: 500,
         purchasePrice: 45,
-        currentPrice: 52,
-        purchaseDate: new Date('2023-04-01')
+        currentPrice: 78,
+        purchaseDate: monthsAgo(40)
       }
     ];
 

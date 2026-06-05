@@ -25,6 +25,7 @@ export class TaxCalculator {
     switch (investment.type) {
       case 'equity':
       case 'mutual_fund':
+      case 'elss': // ELSS is taxed like equity
         return holdingPeriod >= this.constants.holdingPeriods.equity;
       case 'bond':
       case 'fd':
@@ -50,12 +51,18 @@ export class TaxCalculator {
     let taxRate = 0;
     let exemptionAvailable = 0;
 
-    if (investment.type === 'equity' || investment.type === 'mutual_fund') {
+    if (investment.type === 'equity' || investment.type === 'mutual_fund' || investment.type === 'elss') {
       if (isLTCG) {
         taxRate = this.constants.capitalGainsTax.equity.ltcg.rate;
         exemptionAvailable = this.constants.capitalGainsTax.equity.ltcg.exemption;
       } else {
         taxRate = this.constants.capitalGainsTax.equity.stcg;
+      }
+    } else if (investment.type === 'real_estate') {
+      if (isLTCG) {
+        taxRate = this.constants.capitalGainsTax.realEstate.ltcg.rate;
+      } else {
+        taxRate = 0; // Will be taxed as per income tax slab
       }
     } else if (investment.type === 'bond' || investment.type === 'fd') {
       if (isLTCG) {
@@ -67,7 +74,10 @@ export class TaxCalculator {
       taxRate = this.constants.capitalGainsTax.crypto.rate;
     }
 
-    const taxableGain = Math.max(0, gainAmount - exemptionAvailable);
+    // Per-investment tax is gross of the LTCG exemption. The ₹1.25L equity-LTCG
+    // exemption is a per-year aggregate, so it is applied at the portfolio level
+    // (see aggregateCapitalGains), not per holding.
+    const taxableGain = Math.max(0, gainAmount);
     const taxAmount = (taxableGain * taxRate) / 100;
 
     return {
@@ -78,9 +88,48 @@ export class TaxCalculator {
       taxRate,
       taxAmount,
       holdingPeriod,
+      // Marks this gain as eligible for the equity LTCG exemption (Section 112A)
       exemptionAvailable: exemptionAvailable > 0 ? exemptionAvailable : undefined,
-      indexationBenefit: isLTCG && this.constants.capitalGainsTax.debt.ltcg.indexationAvailable ? 
+      indexationBenefit: isLTCG && this.constants.capitalGainsTax.debt.ltcg.indexationAvailable ?
                         purchaseValue * 0.05 : undefined // Simplified indexation
+    };
+  }
+
+  // Applies the single per-year ₹1.25L equity LTCG exemption across the whole
+  // portfolio and returns the net capital gains tax breakdown.
+  aggregateCapitalGains(gains: CapitalGain[]): {
+    stcgTax: number;
+    ltcgTax: number;
+    ltcgExemptionUsed: number;
+    totalCapitalGainsTax: number;
+  } {
+    const exemptionLimit = this.constants.capitalGainsTax.equity.ltcg.exemption;
+    const equityLtcgRate = this.constants.capitalGainsTax.equity.ltcg.rate;
+
+    let stcgTax = 0;
+    let ltcgTaxGross = 0;
+    let equityLtcgGain = 0;
+
+    for (const gain of gains) {
+      if (gain.type === 'STCG') {
+        stcgTax += gain.taxAmount;
+      } else {
+        ltcgTaxGross += gain.taxAmount;
+        // exemptionAvailable is the marker for equity LTCG (Section 112A)
+        if (gain.exemptionAvailable && gain.gainAmount > 0) {
+          equityLtcgGain += gain.gainAmount;
+        }
+      }
+    }
+
+    const ltcgExemptionUsed = Math.min(equityLtcgGain, exemptionLimit);
+    const ltcgTax = Math.max(0, ltcgTaxGross - (ltcgExemptionUsed * equityLtcgRate) / 100);
+
+    return {
+      stcgTax,
+      ltcgTax,
+      ltcgExemptionUsed,
+      totalCapitalGainsTax: stcgTax + ltcgTax
     };
   }
 
@@ -179,7 +228,7 @@ export class TaxCalculator {
       this.calculateCapitalGain(investment)
     ).filter(gain => gain.gainAmount > 0);
 
-    const capitalGainsTax = capitalGains.reduce((total, gain) => total + gain.taxAmount, 0);
+    const capitalGainsTax = this.aggregateCapitalGains(capitalGains).totalCapitalGainsTax;
     const totalCapitalGains = capitalGains.reduce((total, gain) => total + gain.gainAmount, 0);
 
     // Standard deduction

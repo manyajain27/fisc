@@ -8,11 +8,10 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { 
-  Plus, 
-  Trash2, 
-  Play, 
-  Save, 
-  Compare,
+  Plus,
+  Trash2,
+  Play,
+  Save,
   TrendingUp,
   TrendingDown,
   Calculator,
@@ -43,7 +42,7 @@ const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({ portfolio }) => {
   });
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [baselineCalculation, setBaselineCalculation] = useState<TaxCalculation | null>(null);
-  const [grossIncome, setGrossIncome] = useState(1200000);
+  const [grossIncome, setGrossIncome] = useState(1800000);
 
   const taxCalculator = new TaxCalculator();
 

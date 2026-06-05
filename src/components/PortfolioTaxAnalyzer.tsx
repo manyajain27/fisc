@@ -63,12 +63,14 @@ const PortfolioTaxAnalyzer: React.FC<PortfolioTaxAnalyzerProps> = ({ portfolio }
       
       const stcgGainsTotal = stcgGains.reduce((sum, g) => sum + Math.max(0, g.gainAmount), 0);
       const ltcgGainsTotal = ltcgGains.reduce((sum, g) => sum + Math.max(0, g.gainAmount), 0);
-      
-      const stcgTax = stcgGains.reduce((sum, g) => sum + g.taxAmount, 0);
-      const ltcgTax = ltcgGains.reduce((sum, g) => sum + g.taxAmount, 0);
-      
-      const ltcgExemptionUsed = Math.min(ltcgGainsTotal, 125000);
-      const exemptionRemaining = Math.max(0, 125000 - ltcgGainsTotal);
+
+      // Portfolio-level aggregation applies the single ₹1.25L LTCG exemption once
+      const aggregate = taxCalculator.aggregateCapitalGains(gains);
+      const stcgTax = aggregate.stcgTax;
+      const ltcgTax = aggregate.ltcgTax;
+
+      const ltcgExemptionUsed = aggregate.ltcgExemptionUsed;
+      const exemptionRemaining = Math.max(0, 125000 - ltcgExemptionUsed);
 
       setTaxBreakdown({
         totalGains,

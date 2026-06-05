@@ -15,7 +15,7 @@ interface RegimeOptimizerProps {
 }
 
 const RegimeOptimizer: React.FC<RegimeOptimizerProps> = ({ portfolio }) => {
-  const [grossIncome, setGrossIncome] = useState<number>(1200000);
+  const [grossIncome, setGrossIncome] = useState<number>(1800000);
   const [deductions, setDeductions] = useState<{[key: string]: number}>({
     '80C': 150000,
     '80D': 25000,
