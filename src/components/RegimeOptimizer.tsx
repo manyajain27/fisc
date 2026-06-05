@@ -9,18 +9,20 @@ import { Calculator, TrendingDown, TrendingUp, AlertCircle, CheckCircle } from '
 import { TaxCalculator } from '@/lib/taxCalculator';
 import { Portfolio, TaxDeduction } from '@/types/portfolio';
 import { SECTION_80_DEDUCTIONS } from '@/lib/taxConstants';
+import { loadTaxProfile } from '@/components/TaxProfileSurvey';
 
 interface RegimeOptimizerProps {
   portfolio?: Portfolio;
 }
 
 const RegimeOptimizer: React.FC<RegimeOptimizerProps> = ({ portfolio }) => {
-  const [grossIncome, setGrossIncome] = useState<number>(1800000);
+  const savedProfile = loadTaxProfile();
+  const [grossIncome, setGrossIncome] = useState<number>(savedProfile.grossIncome ?? 1800000);
   const [deductions, setDeductions] = useState<{[key: string]: number}>({
-    '80C': 150000,
-    '80D': 25000,
-    '24B': 200000,
-    '80E': 0,
+    '80C': savedProfile.d80C ?? 150000,
+    '80D': savedProfile.d80D ?? 25000,
+    '24B': savedProfile.d24B ?? 200000,
+    '80E': savedProfile.d80E ?? 0,
     '80G': 0
   });
   const [comparison, setComparison] = useState<any>(null);

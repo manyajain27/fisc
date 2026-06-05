@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
+import { CalculatorDialog } from '@/components/EducationCalculators';
 
 interface Guide {
   id: string;
@@ -640,10 +641,15 @@ Deadlines
                       </ul>
                     </div>
 
-                    <Button className="w-full">
-                      <Calculator className="w-4 h-4 mr-2" />
-                      Open Calculator
-                    </Button>
+                    <CalculatorDialog
+                      calcId={calc.id}
+                      trigger={
+                        <Button className="w-full">
+                          <Calculator className="w-4 h-4 mr-2" />
+                          Open Calculator
+                        </Button>
+                      }
+                    />
                   </CardContent>
                 </Card>
               ))}

@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import TaxProfileSurvey from "@/components/TaxProfileSurvey";
 import { useNavigate } from "react-router-dom";
 import { useRef } from "react";
 
@@ -72,6 +73,14 @@ const Upload = () => {
               />
             </CardContent>
           </Card>
+
+          <div className="flex items-center gap-4 my-8 sm:my-10">
+            <div className="h-px flex-1 bg-border" />
+            <span className="text-sm text-muted-foreground">or tell us about yourself</span>
+            <div className="h-px flex-1 bg-border" />
+          </div>
+
+          <TaxProfileSurvey />
         </div>
       </main>
       <Footer />
