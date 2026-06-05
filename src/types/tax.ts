@@ -11,23 +11,23 @@ export interface IndianTaxConstants {
   };
   capitalGainsTax: {
     equity: {
-      stcg: number; // 15%
+      stcg: number; // 20% (Section 111A, w.e.f. 23-Jul-2024)
       ltcg: {
-        rate: number; // 10%
-        exemption: number; // 1 lakh
+        rate: number; // 12.5% (Section 112A)
+        exemption: number; // 1.25 lakh
       };
     };
     debt: {
       stcg: number; // As per income tax slab
       ltcg: {
-        rate: number; // 20% with indexation
+        rate: number; // 12.5% without indexation (Section 112)
         indexationAvailable: boolean;
       };
     };
     realEstate: {
       stcg: number; // As per income tax slab
       ltcg: {
-        rate: number; // 20% with indexation
+        rate: number; // 12.5% without indexation (or 20% with indexation for pre-23-Jul-2024 buys)
         indexationAvailable: boolean;
       };
     };
@@ -38,12 +38,19 @@ export interface IndianTaxConstants {
     };
   };
   cess: number; // 4%
+  // New regime Section 87A rebate (Budget 2025): full rebate up to this taxable income
+  rebate: {
+    new: { incomeLimit: number; maxRebate: number };
+    old: { incomeLimit: number; maxRebate: number };
+  };
   surchargeRates: SurchargeRate[];
+  // Surcharge under the new regime is capped (37% slab removed)
+  maxSurchargeNewRegime: number;
   holdingPeriods: {
-    equity: number; // 12 months
-    debt: number; // 36 months
+    equity: number; // 12 months (listed securities)
+    debt: number; // 24 months
     realEstate: number; // 24 months
-    gold: number; // 36 months
+    gold: number; // 24 months
   };
 }
 

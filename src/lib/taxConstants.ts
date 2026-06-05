@@ -1,11 +1,11 @@
 import { IndianTaxConstants, Section80Deductions } from '@/types/tax';
 
-export const TAX_CONSTANTS_FY_2024_25: IndianTaxConstants = {
-  FY: '2024-25',
-  assessmentYear: '2025-26',
+export const TAX_CONSTANTS_FY_2025_26: IndianTaxConstants = {
+  FY: '2025-26',
+  assessmentYear: '2026-27',
   standardDeductions: {
     old: 50000, // Standard deduction under old regime
-    new: 75000, // Standard deduction under new regime (updated)
+    new: 75000, // Standard deduction under new regime
   },
   taxSlabs: {
     old: [
@@ -14,35 +14,37 @@ export const TAX_CONSTANTS_FY_2024_25: IndianTaxConstants = {
       { min: 500000, max: 1000000, rate: 20 },
       { min: 1000000, max: null, rate: 30 }
     ],
+    // New regime slabs revised in Budget 2025 (w.e.f. FY 2025-26)
     new: [
-      { min: 0, max: 300000, rate: 0 },
-      { min: 300000, max: 700000, rate: 5 },
-      { min: 700000, max: 1000000, rate: 10 },
-      { min: 1000000, max: 1200000, rate: 15 },
-      { min: 1200000, max: 1500000, rate: 20 },
-      { min: 1500000, max: null, rate: 30 }
+      { min: 0, max: 400000, rate: 0 },
+      { min: 400000, max: 800000, rate: 5 },
+      { min: 800000, max: 1200000, rate: 10 },
+      { min: 1200000, max: 1600000, rate: 15 },
+      { min: 1600000, max: 2000000, rate: 20 },
+      { min: 2000000, max: 2400000, rate: 25 },
+      { min: 2400000, max: null, rate: 30 }
     ]
   },
   capitalGainsTax: {
     equity: {
-      stcg: 15,
+      stcg: 20, // Section 111A (w.e.f. 23-Jul-2024)
       ltcg: {
-        rate: 10,
-        exemption: 100000
+        rate: 12.5, // Section 112A
+        exemption: 125000 // ₹1.25 lakh
       }
     },
     debt: {
       stcg: 0, // As per income tax slab
       ltcg: {
-        rate: 20,
-        indexationAvailable: true
+        rate: 12.5, // Section 112, no indexation (w.e.f. 23-Jul-2024)
+        indexationAvailable: false
       }
     },
     realEstate: {
       stcg: 0, // As per income tax slab
       ltcg: {
-        rate: 20,
-        indexationAvailable: true
+        rate: 12.5, // 12.5% without indexation (or 20% with indexation for pre-23-Jul-2024 buys)
+        indexationAvailable: false
       }
     },
     crypto: {
@@ -52,6 +54,11 @@ export const TAX_CONSTANTS_FY_2024_25: IndianTaxConstants = {
     }
   },
   cess: 4, // 4% Health and Education Cess
+  rebate: {
+    // Section 87A: new regime gives full rebate up to ₹12L taxable income (Budget 2025)
+    new: { incomeLimit: 1200000, maxRebate: 60000 },
+    old: { incomeLimit: 500000, maxRebate: 12500 }
+  },
   surchargeRates: [
     { min: 0, max: 5000000, rate: 0 },
     { min: 5000000, max: 10000000, rate: 10 },
@@ -59,13 +66,17 @@ export const TAX_CONSTANTS_FY_2024_25: IndianTaxConstants = {
     { min: 20000000, max: 50000000, rate: 25 },
     { min: 50000000, max: null, rate: 37 }
   ],
+  maxSurchargeNewRegime: 25, // 37% slab not applicable under new regime
   holdingPeriods: {
-    equity: 12, // months
-    debt: 36,   // months
+    equity: 12, // months (listed securities)
+    debt: 24,   // months (w.e.f. 23-Jul-2024)
     realEstate: 24, // months
-    gold: 36    // months
+    gold: 24    // months (w.e.f. 23-Jul-2024)
   }
 };
+
+// Backwards-compatible alias
+export const TAX_CONSTANTS_FY_2024_25 = TAX_CONSTANTS_FY_2025_26;
 
 export const SECTION_80_DEDUCTIONS: Section80Deductions = {
   section80C: {
@@ -103,17 +114,18 @@ export const SECTION_80_DEDUCTIONS: Section80Deductions = {
   }
 };
 
+// Deadlines for FY 2025-26 (AY 2026-27)
 export const TAX_DEADLINES = {
   advance_tax: {
-    q1: '2024-06-15',
-    q2: '2024-09-15',
-    q3: '2024-12-15',
-    q4: '2025-03-15'
+    q1: '2025-06-15',
+    q2: '2025-09-15',
+    q3: '2025-12-15',
+    q4: '2026-03-15'
   },
   itr_filing: {
-    individual: '2024-07-31',
-    audit_required: '2024-10-31'
+    individual: '2026-07-31',
+    audit_required: '2026-10-31'
   },
-  tds_payment: '2024-07-07', // Monthly by 7th
-  quarterly_returns: '2024-07-31'
+  tds_payment: '2026-07-07', // Monthly by 7th
+  quarterly_returns: '2026-07-31'
 };

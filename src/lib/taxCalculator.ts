@@ -1,17 +1,22 @@
 import { Investment, Portfolio, TaxCalculation, CapitalGain, TaxDeduction } from '@/types/portfolio';
 import { TaxSlabRate, IndianTaxConstants } from '@/types/tax';
-import { TAX_CONSTANTS_FY_2024_25, SECTION_80_DEDUCTIONS } from './taxConstants';
+import { TAX_CONSTANTS_FY_2025_26, SECTION_80_DEDUCTIONS } from './taxConstants';
 
 export class TaxCalculator {
   private constants: IndianTaxConstants;
 
   constructor() {
-    this.constants = TAX_CONSTANTS_FY_2024_25;
+    this.constants = TAX_CONSTANTS_FY_2025_26;
   }
 
   calculateHoldingPeriod(purchaseDate: Date, saleDate: Date = new Date()): number {
-    const diffTime = Math.abs(saleDate.getTime() - purchaseDate.getTime());
-    return Math.floor(diffTime / (1000 * 60 * 60 * 24 * 30)); // in months
+    // Whole calendar months between the two dates
+    let months = (saleDate.getFullYear() - purchaseDate.getFullYear()) * 12 +
+      (saleDate.getMonth() - purchaseDate.getMonth());
+    if (saleDate.getDate() < purchaseDate.getDate()) {
+      months -= 1;
+    }
+    return Math.max(0, months);
   }
 
   isLongTermCapitalGain(investment: Investment, saleDate: Date = new Date()): boolean {
@@ -96,11 +101,30 @@ export class TaxCalculator {
     return tax;
   }
 
-  calculateSurcharge(income: number, tax: number): number {
+  calculateSurcharge(income: number, tax: number, regime: 'old' | 'new' = 'new'): number {
     for (const rate of this.constants.surchargeRates) {
       if (income >= rate.min && (rate.max === null || income <= rate.max)) {
-        return (tax * rate.rate) / 100;
+        // New regime caps surcharge (37% slab removed)
+        const applicableRate = regime === 'new'
+          ? Math.min(rate.rate, this.constants.maxSurchargeNewRegime)
+          : rate.rate;
+        return (tax * applicableRate) / 100;
       }
+    }
+    return 0;
+  }
+
+  // Section 87A rebate. Eligibility is based on total income (including capital
+  // gains), but the rebate only offsets the slab tax — not special-rate CG tax.
+  calculateRebate(
+    taxableIncome: number,
+    incomeTax: number,
+    regime: 'old' | 'new',
+    totalIncomeForEligibility: number = taxableIncome
+  ): number {
+    const rebate = this.constants.rebate[regime];
+    if (totalIncomeForEligibility <= rebate.incomeLimit) {
+      return Math.min(incomeTax, rebate.maxRebate);
     }
     return 0;
   }
@@ -169,8 +193,12 @@ export class TaxCalculator {
     const taxableIncome = Math.max(0, grossIncome - totalDeductions);
 
     // Income tax calculation
-    const incomeTax = this.calculateIncomeTax(taxableIncome, regime);
-    const surcharge = this.calculateSurcharge(taxableIncome, incomeTax);
+    const grossIncomeTax = this.calculateIncomeTax(taxableIncome, regime);
+    // Section 87A rebate (e.g. income up to ₹12L is tax-free under new regime).
+    // Eligibility considers capital gains, but the rebate only offsets slab tax.
+    const rebate = this.calculateRebate(taxableIncome, grossIncomeTax, regime, taxableIncome + totalCapitalGains);
+    const incomeTax = Math.max(0, grossIncomeTax - rebate);
+    const surcharge = this.calculateSurcharge(taxableIncome, incomeTax, regime);
     const cess = this.calculateCess(incomeTax + surcharge);
 
     const totalTax = incomeTax + surcharge + cess;
@@ -222,15 +250,20 @@ export class TaxCalculator {
     // Check holding period optimization
     for (const investment of portfolio.investments) {
       const holdingPeriod = this.calculateHoldingPeriod(investment.purchaseDate);
-      const requiredPeriod = investment.type === 'equity' ? 12 : 36;
-      
+      const isEquity = investment.type === 'equity' || investment.type === 'mutual_fund';
+      const requiredPeriod = isEquity
+        ? this.constants.holdingPeriods.equity
+        : this.constants.holdingPeriods.debt;
+
       if (holdingPeriod < requiredPeriod) {
         const monthsToLTCG = requiredPeriod - holdingPeriod;
+        // Equity STCG 20% vs LTCG 12.5% => 7.5% saving
+        const savingRate = isEquity ? 0.075 : 0;
         insights.push({
           type: 'holding_period' as const,
           title: `Hold ${investment.name} for ${monthsToLTCG} more months`,
-          description: `Converting to LTCG can reduce tax rate from 15% to 10%`,
-          potentialSaving: investment.quantity * (investment.currentPrice - investment.purchasePrice) * 0.05,
+          description: `Converting to LTCG can reduce the equity tax rate from 20% to 12.5%`,
+          potentialSaving: investment.quantity * (investment.currentPrice - investment.purchasePrice) * savingRate,
           actionRequired: `Wait ${monthsToLTCG} months before selling`,
           priority: 'medium' as const
         });

@@ -456,14 +456,14 @@ const Dashboard = () => {
                       <span className="text-sm text-muted-foreground">Short Term (STCG)</span>
                       <div className="text-right">
                         <p className="font-medium text-sm sm:text-base">₹{(dashboardStats.stcgGains || 0).toLocaleString()}</p>
-                        <p className="text-xs text-muted-foreground">15% tax rate</p>
+                        <p className="text-xs text-muted-foreground">20% tax rate</p>
                       </div>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-muted-foreground">Long Term (LTCG)</span>
                       <div className="text-right">
                         <p className="font-medium text-sm sm:text-base">₹{(dashboardStats.ltcgGains || 0).toLocaleString()}</p>
-                      <p className="text-xs text-muted-foreground">10% tax rate</p>
+                      <p className="text-xs text-muted-foreground">12.5% tax rate</p>
                     </div>
                   </div>
                   <div className="pt-2 border-t">

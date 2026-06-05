@@ -47,6 +47,17 @@ Response Format:
 - Provide current rates/limits with their source
 - End with compliance requirements
 
+CURRENT RATES (FY 2025-26 / AY 2026-27) - use these, they reflect recent law changes:
+- New tax regime is the DEFAULT regime (since FY 2023-24).
+- Section 87A rebate (new regime, Budget 2025): income up to Rs. 12,00,000 is effectively tax-free (Rs. 12,75,000 for salaried after Rs. 75,000 standard deduction).
+- New regime slabs FY 2025-26: 0-4L nil, 4-8L 5%, 8-12L 10%, 12-16L 15%, 16-20L 20%, 20-24L 25%, above 24L 30%.
+- Standard deduction: Rs. 50,000 (old regime), Rs. 75,000 (new regime).
+- Equity STCG (Section 111A): 20% (w.e.f. 23 July 2024).
+- Equity LTCG (Section 112A): 12.5% on gains above Rs. 1,25,000 (w.e.f. 23 July 2024).
+- Other-asset LTCG (Section 112): 12.5% without indexation. Indexation removed; only real estate bought before 23 July 2024 may opt for 20% with indexation.
+- Holding periods: 12 months for listed securities, 24 months for all other assets.
+- Crypto/VDA: 30% flat plus 1% TDS, no indexation, no loss set-off.
+
 Important: Always remind users to consult a qualified CA for complex scenarios and verify current rates as tax laws can change. All advice must be based on actual provisions of Indian tax legislation.`;
 
 export const generateChatResponse = async (
@@ -63,7 +74,7 @@ export const generateChatResponse = async (
 
     const completion = await groq.chat.completions.create({
       messages: messages,
-      model: 'llama-3.1-8b-instant',
+      model: 'llama-3.3-70b-versatile',
       temperature: 0.7,
       max_tokens: 1000,
       stream: false
@@ -90,15 +101,15 @@ export const getQuickResponse = (query: string): string | null => {
   const lowerQuery = query.toLowerCase();
   
   if (lowerQuery.includes('regime') && (lowerQuery.includes('old') || lowerQuery.includes('new'))) {
-    return `Tax Regime Comparison under Income Tax Act, 1961:
+    return `Tax Regime Comparison under Income Tax Act, 1961 (FY 2025-26):
 
-Old Regime (Default):
-Under Section 11 of Income Tax Act, 1961, taxpayers can claim various deductions like Section 80C (up to Rs. 1.5 lakhs), Section 80D (Rs. 25,000 to Rs. 50,000), HRA under Section 10(13A), etc. This regime has higher tax slabs but allows multiple deductions.
+Old Regime:
+Taxpayers can claim deductions like Section 80C (up to Rs. 1.5 lakhs), Section 80D (Rs. 25,000 to Rs. 50,000), HRA under Section 10(13A), etc. This regime has higher tax slabs but allows multiple deductions.
 
-New Regime (Section 115BAC):
-Introduced by Finance Act 2020, Section 115BAC offers lower tax rates but restricts most deductions except standard deduction of Rs. 50,000 under Section 16 for FY 2023-24 as per Finance Act 2023.
+New Regime (Section 115BAC) - this is the DEFAULT regime:
+Offers lower tax rates with a standard deduction of Rs. 75,000 but restricts most other deductions. Slabs for FY 2025-26: nil up to Rs. 4L, 5% Rs. 4-8L, 10% Rs. 8-12L, 15% Rs. 12-16L, 20% Rs. 16-20L, 25% Rs. 20-24L, 30% above Rs. 24L. Under the Section 87A rebate, income up to Rs. 12,00,000 is effectively tax-free (Rs. 12,75,000 for salaried).
 
-Legal Analysis: Choose old regime if your total eligible deductions exceed Rs. 2.5 lakhs. The option under Section 115BAC(1A) allows switching between regimes each year.
+Legal Analysis: The new regime is now beneficial for most taxpayers, especially incomes up to Rs. 12 lakh. Choose the old regime mainly if your total eligible deductions are large. Section 115BAC(1A) allows switching between regimes each year.
 
 Would you like me to calculate which regime works better for your specific income and deductions?`;
   }

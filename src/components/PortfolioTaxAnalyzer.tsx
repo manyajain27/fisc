@@ -67,8 +67,8 @@ const PortfolioTaxAnalyzer: React.FC<PortfolioTaxAnalyzerProps> = ({ portfolio }
       const stcgTax = stcgGains.reduce((sum, g) => sum + g.taxAmount, 0);
       const ltcgTax = ltcgGains.reduce((sum, g) => sum + g.taxAmount, 0);
       
-      const ltcgExemptionUsed = Math.min(ltcgGainsTotal, 100000);
-      const exemptionRemaining = Math.max(0, 100000 - ltcgGainsTotal);
+      const ltcgExemptionUsed = Math.min(ltcgGainsTotal, 125000);
+      const exemptionRemaining = Math.max(0, 125000 - ltcgGainsTotal);
 
       setTaxBreakdown({
         totalGains,
@@ -89,16 +89,18 @@ const PortfolioTaxAnalyzer: React.FC<PortfolioTaxAnalyzerProps> = ({ portfolio }
   };
 
   const getHoldingPeriodColor = (months: number, investmentType: string) => {
-    const requiredMonths = investmentType.includes('equity') ? 12 : 36;
+    const isEquity = investmentType.includes('equity') || investmentType.includes('mutual');
+    const requiredMonths = isEquity ? 12 : 24;
     if (months >= requiredMonths) return 'text-success';
     if (months >= requiredMonths * 0.8) return 'text-warning';
     return 'text-destructive';
   };
 
   const getOptimizationSuggestion = (investment: Investment, gain: CapitalGain) => {
-    if (gain.type === 'STCG' && gain.holdingPeriod < 12) {
+    const isEquity = investment.type === 'equity' || investment.type === 'mutual_fund';
+    if (isEquity && gain.type === 'STCG' && gain.holdingPeriod < 12 && gain.gainAmount > 0) {
       const monthsToLTCG = 12 - gain.holdingPeriod;
-      const potentialSaving = gain.gainAmount * 0.05; // 15% vs 10%
+      const potentialSaving = gain.gainAmount * 0.075; // equity 20% vs 12.5%
       return {
         type: 'hold',
         message: `Hold for ${monthsToLTCG} more months to save ₹${potentialSaving.toLocaleString()}`,
@@ -230,7 +232,7 @@ const PortfolioTaxAnalyzer: React.FC<PortfolioTaxAnalyzerProps> = ({ portfolio }
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Tax Rate:</span>
-                      <span className="font-medium">15%</span>
+                      <span className="font-medium">20%</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Tax Amount:</span>
@@ -256,7 +258,7 @@ const PortfolioTaxAnalyzer: React.FC<PortfolioTaxAnalyzerProps> = ({ portfolio }
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Tax Rate:</span>
-                      <span className="font-medium">10%</span>
+                      <span className="font-medium">12.5%</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Exemption Used:</span>
@@ -284,12 +286,12 @@ const PortfolioTaxAnalyzer: React.FC<PortfolioTaxAnalyzerProps> = ({ portfolio }
                       <span>Used: ₹{taxBreakdown.exemptionUsed.toLocaleString()}</span>
                       <span>Remaining: ₹{taxBreakdown.exemptionRemaining.toLocaleString()}</span>
                     </div>
-                    <Progress 
-                      value={(taxBreakdown.exemptionUsed / 100000) * 100} 
+                    <Progress
+                      value={(taxBreakdown.exemptionUsed / 125000) * 100}
                       className="h-2"
                     />
                     <p className="text-xs text-muted-foreground">
-                      Under Section 112A, LTCG on equity above ₹1 lakh is taxed at 10%
+                      Under Section 112A, LTCG on equity above ₹1.25 lakh is taxed at 12.5%
                     </p>
                   </div>
                 </CardContent>

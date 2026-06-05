@@ -62,14 +62,14 @@ const TaxSavingInsights: React.FC<TaxSavingInsightsProps> = ({ portfolio }) => {
         // Holding Period Optimization
         if (gain.type === 'STCG' && holdingPeriod < 12 && investment.type === 'equity') {
           const monthsToLTCG = 12 - holdingPeriod;
-          const potentialSaving = gain.gainAmount * 0.05; // 15% to 10%
-          
+          const potentialSaving = gain.gainAmount * 0.075; // equity 20% to 12.5%
+
           if (potentialSaving > 5000) {
             generatedInsights.push({
               id: `holding_${investment.id}`,
               type: 'holding_period',
               title: `Hold ${investment.name} for ${monthsToLTCG} more months`,
-              description: `Converting to LTCG will reduce tax rate from 15% to 10%, saving you ₹${potentialSaving.toLocaleString()}`,
+              description: `Converting to LTCG will reduce tax rate from 20% to 12.5%, saving you ₹${potentialSaving.toLocaleString()}`,
               potentialSaving,
               actionRequired: `Wait until ${new Date(investment.purchaseDate.getTime() + 12 * 30 * 24 * 60 * 60 * 1000).toLocaleDateString()} before selling`,
               deadline: new Date(investment.purchaseDate.getTime() + 12 * 30 * 24 * 60 * 60 * 1000),
@@ -86,7 +86,7 @@ const TaxSavingInsights: React.FC<TaxSavingInsightsProps> = ({ portfolio }) => {
             type: 'tax_loss_harvesting',
             title: `Harvest losses from ${investment.name}`,
             description: `Realize losses of ₹${Math.abs(gain.gainAmount).toLocaleString()} to offset other capital gains`,
-            potentialSaving: Math.abs(gain.gainAmount) * 0.15, // Assuming STCG offset
+            potentialSaving: Math.abs(gain.gainAmount) * 0.20, // Assuming equity STCG offset (20%)
             actionRequired: 'Sell the investment and consider buying back after 30 days to avoid wash sale',
             priority: 'medium',
             legalReference: 'Section 70 & 71 of Income Tax Act, 1961'
@@ -108,7 +108,7 @@ const TaxSavingInsights: React.FC<TaxSavingInsightsProps> = ({ portfolio }) => {
           description: `Switching to the ${betterRegime} regime can save you ₹${regimeSavings.toLocaleString()} annually`,
           potentialSaving: regimeSavings,
           actionRequired: `File ITR under ${betterRegime} regime for next financial year`,
-          deadline: new Date('2024-07-31'),
+          deadline: new Date('2026-07-31'),
           priority: regimeSavings > 50000 ? 'high' : 'medium',
           legalReference: 'Section 115BAC of Income Tax Act, 1961'
         });
@@ -122,7 +122,7 @@ const TaxSavingInsights: React.FC<TaxSavingInsightsProps> = ({ portfolio }) => {
         description: 'You can save up to ₹46,500 by maximizing your Section 80C investments',
         potentialSaving: 46500, // 1.5L * 31% (highest slab)
         actionRequired: 'Invest in ELSS, PPF, or other qualifying instruments before March 31st',
-        deadline: new Date('2024-03-31'),
+        deadline: new Date('2026-03-31'),
         priority: 'high',
         legalReference: 'Section 80C of Income Tax Act, 1961'
       };
@@ -134,15 +134,15 @@ const TaxSavingInsights: React.FC<TaxSavingInsightsProps> = ({ portfolio }) => {
         .filter(gain => gain.type === 'LTCG')
         .reduce((sum, gain) => sum + gain.gainAmount, 0);
 
-      if (ltcgGains < 100000 && ltcgGains > 50000) {
+      if (ltcgGains < 125000 && ltcgGains > 50000) {
         generatedInsights.push({
           id: 'ltcg_exemption',
           type: 'holding_period',
           title: 'Utilize LTCG exemption before year-end',
-          description: `You have ₹${(100000 - ltcgGains).toLocaleString()} of LTCG exemption remaining this year`,
-          potentialSaving: (100000 - ltcgGains) * 0.1,
+          description: `You have ₹${(125000 - ltcgGains).toLocaleString()} of LTCG exemption remaining this year`,
+          potentialSaving: (125000 - ltcgGains) * 0.125,
           actionRequired: 'Consider booking some LTCG profits before March 31st',
-          deadline: new Date('2024-03-31'),
+          deadline: new Date('2026-03-31'),
           priority: 'medium',
           legalReference: 'Section 112A of Income Tax Act, 1961'
         });

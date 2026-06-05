@@ -45,13 +45,19 @@ const TaxCalendar = () => {
   const [monthView, setMonthView] = useState<MonthView | null>(null);
   const [completedEvents, setCompletedEvents] = useState<Set<string>>(new Set());
 
+  // Anchor all deadlines to the active financial year so the calendar stays
+  // current every year. FY starts in April (month index 3).
+  const today = new Date();
+  const fyStartYear = today.getMonth() >= 3 ? today.getFullYear() : today.getFullYear() - 1;
+  const d = (year: number, monthIndex: number, day: number) => new Date(year, monthIndex, day);
+
   const taxEvents: TaxEvent[] = [
     // ITR Filing Deadlines
     {
-      id: 'itr_individual_2024',
+      id: 'itr_individual',
       title: 'ITR Filing Deadline - Individuals',
       description: 'Last date to file Income Tax Return for individuals (non-audit cases)',
-      date: new Date('2024-07-31'),
+      date: d(fyStartYear, 6, 31), // 31 Jul
       type: 'deadline',
       priority: 'high',
       category: 'itr',
@@ -65,10 +71,10 @@ const TaxCalendar = () => {
       ]
     },
     {
-      id: 'itr_audit_2024',
+      id: 'itr_audit',
       title: 'ITR Filing Deadline - Audit Cases',
       description: 'Last date to file ITR for cases requiring tax audit',
-      date: new Date('2024-10-31'),
+      date: d(fyStartYear, 9, 31), // 31 Oct
       type: 'deadline',
       priority: 'high',
       category: 'itr',
@@ -82,10 +88,10 @@ const TaxCalendar = () => {
 
     // Advance Tax Deadlines
     {
-      id: 'advance_tax_q1_2024',
+      id: 'advance_tax_q1',
       title: 'Advance Tax Q1 Payment',
       description: '15% of annual tax liability due',
-      date: new Date('2024-06-15'),
+      date: d(fyStartYear, 5, 15), // 15 Jun
       type: 'deadline',
       priority: 'medium',
       category: 'advance_tax',
@@ -97,10 +103,10 @@ const TaxCalendar = () => {
       ]
     },
     {
-      id: 'advance_tax_q2_2024',
+      id: 'advance_tax_q2',
       title: 'Advance Tax Q2 Payment',
       description: '45% of annual tax liability due (cumulative)',
-      date: new Date('2024-09-15'),
+      date: d(fyStartYear, 8, 15), // 15 Sep
       type: 'deadline',
       priority: 'medium',
       category: 'advance_tax',
@@ -112,10 +118,10 @@ const TaxCalendar = () => {
       ]
     },
     {
-      id: 'advance_tax_q3_2024',
+      id: 'advance_tax_q3',
       title: 'Advance Tax Q3 Payment',
       description: '75% of annual tax liability due (cumulative)',
-      date: new Date('2024-12-15'),
+      date: d(fyStartYear, 11, 15), // 15 Dec
       type: 'deadline',
       priority: 'medium',
       category: 'advance_tax',
@@ -127,10 +133,10 @@ const TaxCalendar = () => {
       ]
     },
     {
-      id: 'advance_tax_q4_2024',
+      id: 'advance_tax_q4',
       title: 'Advance Tax Q4 Payment',
       description: '100% of annual tax liability due',
-      date: new Date('2025-03-15'),
+      date: d(fyStartYear + 1, 2, 15), // 15 Mar
       type: 'deadline',
       priority: 'medium',
       category: 'advance_tax',
@@ -147,7 +153,7 @@ const TaxCalendar = () => {
       id: 'section_80c_planning',
       title: 'Section 80C Investment Planning',
       description: 'Plan and execute Section 80C investments before year-end',
-      date: new Date('2024-12-31'),
+      date: d(fyStartYear, 11, 31), // 31 Dec
       type: 'reminder',
       priority: 'high',
       category: 'investment',
@@ -162,8 +168,8 @@ const TaxCalendar = () => {
     {
       id: 'ltcg_harvesting',
       title: 'LTCG Harvesting Window',
-      description: 'Optimal time to book LTCG within ₹1 lakh exemption',
-      date: new Date('2025-01-31'),
+      description: 'Optimal time to book LTCG within ₹1.25 lakh exemption',
+      date: d(fyStartYear + 1, 0, 31), // 31 Jan
       type: 'planning',
       priority: 'medium',
       category: 'investment',
@@ -171,7 +177,7 @@ const TaxCalendar = () => {
       actionItems: [
         'Review equity portfolio for LTCG opportunities',
         'Calculate current LTCG for the year',
-        'Book profits within ₹1 lakh exemption limit',
+        'Book profits within ₹1.25 lakh exemption limit',
         'Maintain records of transactions'
       ]
     },
@@ -181,7 +187,7 @@ const TaxCalendar = () => {
       id: 'tds_certificate_collection',
       title: 'Collect TDS Certificates',
       description: 'Ensure all TDS certificates (Form 16A) are collected',
-      date: new Date('2024-05-31'),
+      date: d(fyStartYear, 4, 31), // 31 May
       type: 'reminder',
       priority: 'medium',
       category: 'compliance',
@@ -199,7 +205,7 @@ const TaxCalendar = () => {
       id: 'portfolio_review_q1',
       title: 'Quarterly Portfolio Review',
       description: 'Review portfolio performance and tax implications',
-      date: new Date('2024-06-30'),
+      date: d(fyStartYear, 5, 30), // 30 Jun
       type: 'planning',
       priority: 'low',
       category: 'investment',

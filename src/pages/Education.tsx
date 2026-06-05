@@ -68,22 +68,22 @@ Short Term Capital Gains (STCG)
 
 Definition: Gains from assets held for less than the prescribed holding period.
 
-Holding Periods:
-• Equity shares/Equity mutual funds: Less than 12 months
-• Debt mutual funds/Bonds: Less than 36 months  
+Holding Periods (w.e.f. 23 July 2024):
+• Listed equity shares/Equity mutual funds: Less than 12 months
+• Debt/Bonds/Gold/Unlisted assets: Less than 24 months
 • Real estate: Less than 24 months
 
 Tax Rates:
-• Equity STCG: 15% (plus cess and surcharge)
+• Equity STCG: 20% (plus cess and surcharge)
 • Non-equity STCG: As per income tax slab rates
 
 Long Term Capital Gains (LTCG)
 
 Definition: Gains from assets held for more than the prescribed holding period.
 
-Tax Rates:
-• Equity LTCG: 10% on gains above ₹1 lakh (Section 112A)
-• Non-equity LTCG: 20% with indexation benefit (Section 112)
+Tax Rates (w.e.f. 23 July 2024):
+• Equity LTCG: 12.5% on gains above ₹1.25 lakh (Section 112A)
+• Non-equity LTCG: 12.5% without indexation (Section 112). Indexation has been removed; a grandfathering option (20% with indexation) remains only for real estate acquired before 23 July 2024.
 
 Key Legal Provisions
 
@@ -94,7 +94,7 @@ Key Legal Provisions
 Tax Optimization Strategies
 
 1. Hold for the Long Term: Convert STCG to LTCG by holding assets longer
-2. Use LTCG Exemption: ₹1 lakh exemption on equity LTCG per year
+2. Use LTCG Exemption: ₹1.25 lakh exemption on equity LTCG per year
 3. Tax Loss Harvesting: Offset gains with losses under Section 70 and 71
 
 Example Calculation
@@ -103,13 +103,13 @@ Scenario: You bought Reliance shares for ₹2,000 per share and sold for ₹2,50
 
 • Holding Period: 8 months (STCG)
 • Gain per Share: ₹500
-• Tax Rate: 15%
-• Tax Liability: ₹75 per share
+• Tax Rate: 20%
+• Tax Liability: ₹100 per share
 
 If held for 12+ months:
 • Classification: LTCG
-• Tax Rate: 10% (if total LTCG > ₹1 lakh)
-• Tax Saving: ₹25 per share (5% difference)
+• Tax Rate: 12.5% (if total LTCG > ₹1.25 lakh)
+• Tax Saving: ₹37.50 per share (7.5% difference)
       `,
       tags: ['capital gains', 'tax rates', 'holding period'],
       difficulty: 1,
@@ -200,15 +200,18 @@ Old Regime (Section 11)
 
 Plus: All deductions available
 
-New Regime (Section 115BAC)
-• 0% - ₹3 lakh
-• 5% - ₹3L to ₹7L
-• 10% - ₹7L to ₹10L
-• 15% - ₹10L to ₹12L
-• 20% - ₹12L to ₹15L
-• 30% - Above ₹15L
+New Regime (Section 115BAC) - FY 2025-26, the default regime
+• 0% - ₹4 lakh
+• 5% - ₹4L to ₹8L
+• 10% - ₹8L to ₹12L
+• 15% - ₹12L to ₹16L
+• 20% - ₹16L to ₹20L
+• 25% - ₹20L to ₹24L
+• 30% - Above ₹24L
 
-But: Limited deductions
+Plus: Section 87A rebate makes income up to ₹12 lakh tax-free
+(₹12.75 lakh for salaried, after ₹75,000 standard deduction).
+But: Limited deductions.
 
 Decision Framework
 
@@ -222,22 +225,25 @@ Choose New Regime If:
 • Minimal investments
 • No home loan
 • Simple salary income
-• Young professionals
+• Income up to ₹12 lakh (effectively zero tax)
 
 Example Calculation
 
-Income: ₹12 lakh
+Salary Income: ₹12 lakh
 
-Old Regime:
-• Tax: ₹1,12,500
-• Less: 80C (₹1.5L): ₹46,500
-• Less: 80D (₹25K): ₹7,750
-• Net Tax: ₹58,250
+Old Regime (with ₹1.5L 80C + ₹25K 80D deductions):
+• Taxable: ₹12L − ₹50K std − ₹1.5L 80C − ₹25K 80D = ₹9.75L
+• Tax: ₹12,500 (5% of ₹2.5L) + ₹95,000 (20% of ₹4.75L) = ₹1,07,500
+• Add 4% cess: ₹4,300
+• Net Tax: ₹1,11,800
 
-New Regime:
-• Tax: ₹78,000
+New Regime (FY 2025-26, no deductions needed):
+• Taxable: ₹12L − ₹75K std = ₹11.25L
+• Tax: ₹20,000 (5% of ₹4L) + ₹32,500 (10% of ₹3.25L) = ₹52,500
+• Less: Section 87A rebate (taxable ≤ ₹12L): ₹52,500
+• Net Tax: ₹0
 
-Winner: Old regime (saves ₹19,750)
+Winner: New regime — income up to ₹12 lakh is effectively tax-free
       `,
       tags: ['tax regime', 'comparison', 'optimization'],
       difficulty: 2,
@@ -287,7 +293,7 @@ Portfolio:
 Strategy:
 • Sell Stock B to book ₹30,000 loss
 • Net STCG: ₹20,000
-• Tax saved: ₹4,500 (15% of ₹30,000)
+• Tax saved: ₹6,000 (20% of ₹30,000)
 
 Important Notes
 
@@ -335,8 +341,8 @@ For Each Transaction:
 Step 3: Fill ITR Form
 
 Schedule CG (Capital Gains)
-□ Short-term gains (15% and slab rate)
-□ Long-term gains (10% and 20%)
+□ Short-term gains (20% and slab rate)
+□ Long-term gains (12.5%)
 □ Exemptions claimed
 
 Schedule AL (Assets and Liabilities)
@@ -671,7 +677,7 @@ Deadlines
                     },
                     {
                       term: "Assessment Year",
-                      definition: "Year in which income tax is assessed. AY 2024-25 corresponds to FY 2023-24."
+                      definition: "Year in which income tax is assessed. AY 2026-27 corresponds to FY 2025-26."
                     },
                     {
                       term: "Standard Deduction",
